@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"ecs-describer/utils"
+
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -25,7 +26,7 @@ func main() {
 	taskDetails := utils.DescribeClusterTasks(clusterName)
 
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Service", "Container", "Image", "IP"})
+	table.SetHeader([]string{"Service", "Container", "Image", "Instance Id", "IP"})
 
 	for _, taskDetail := range taskDetails.Tasks {
 		for _, containerDetails := range taskDetail.Containers {
@@ -34,6 +35,7 @@ func main() {
 			instanceDetails := utils.DescribeClusterInstances(clusterName, ContainerArn)
 
 			row := []string{*taskDetail.Group, *containerDetails.Name, *containerDetails.Image,
+				*instanceDetails.Reservations[0].Instances[0].InstanceId,
 				*instanceDetails.Reservations[0].Instances[0].PublicIpAddress}
 			table.Append(row)
 		}
